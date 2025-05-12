@@ -251,11 +251,15 @@ def IDA(Start,limit):
     return check
 
 # local search algorithms 
-# A./ Simple hill climbing 
+
 
 def Stochastic_Hill_Climbing(Start):
     stack = [ ( Start , [] ) ]
     visited = set()
+    visited.add(str(Start))
+    
+    result = []
+    result.append(Start)
     
     while stack:
         matran_hientai, path = stack.pop()
@@ -281,13 +285,18 @@ def Stochastic_Hill_Climbing(Start):
             new_state = random.choice(random_state)
             visited.add(str(new_state))
             stack.append((new_state,path + [matran_hientai]))
+            result.append(new_state)
         else :
             return path
-    return []
+    return result
 
-def Hill_Climbing(Start):
+def Steepest_Hill_Climbing(Start):
     stack = [ ( Start , [] ) ]
     visited = set()
+    visited.add(str(Start))
+    
+    result = []
+    result.append(Start)
     
     while stack:
         matran_hientai, path = stack.pop()
@@ -313,16 +322,47 @@ def Hill_Climbing(Start):
             chiphi_tmp,new_state = list_state.get()
             visited.add(str(new_state))
             stack.append((new_state,path + [matran_hientai]))
+            result.append(new_state)
         else :
             return path
-    return []
+    return result
 
 def Simple_Hill_Climbing(Start):
-    pass
+    stack = [ ( Start , [] ) ]
+    visited = set()
+    visited.add(str(Start))
+    
+    result = []
+    result.append(Start)
+    
+    while stack:
+        matran_hientai, path = stack.pop()
+        if matran_hientai == Goal:
+            path = path + [Goal]
+            return path
+    
+        x,y = Tim_0(matran_hientai)
+        
+        for dx,dy in Moves:
+            new_X = dx + x
+            new_Y = dy + y 
+            if(Check(new_X,new_Y)):
+                new_matran = DiChuyen(matran_hientai,x,y,new_X,new_Y)
+                if(str(new_matran) not in visited) :
+                    if(khoang_cach_mahathan(new_matran) < khoang_cach_mahathan(matran_hientai)):
+                        visited.add(str(new_matran))
+                        stack.append((new_matran,path + [matran_hientai]))
+                        result.append(new_matran)
+                        break
+        
+    return result
 
 def Simulated_Annealing(Start):
     stack = [ ( Start , [] ) ]
     visited = set()
+    
+    result = []
+    result.append(Start)
     
     while stack:
         matran_hientai, path = stack.pop()
@@ -350,6 +390,7 @@ def Simulated_Annealing(Start):
                 if p < exp(-(khoang_cach_mahathan(matran_hientai) - chiphi_tmp)/T):
                     visited.add(str(new_state))
                     stack.append((new_state,path + [matran_hientai]))
+                    result.append(new_state)
                     break
                 else:
                     for i in range(len(list_state.queue)):
@@ -357,46 +398,47 @@ def Simulated_Annealing(Start):
                         if p < exp(-(khoang_cach_mahathan(matran_hientai) - chiphi_state)/T):
                             visited.add(str(state))
                             stack.append((new_state,path + [matran_hientai]))
+                            result.append(new_state)
                             break
             else:
                 visited.add(str(new_state))
                 stack.append((new_state,path + [matran_hientai]))
+                result.append(new_state)
         else :
             return path
-    return []
-
+    return result
 
 def Beam_Search(Start, beam_width=3):
-    from queue import PriorityQueue
-    current_level = [(Start, [])]
+
+    queue = [(khoang_cach_mahathan(Start), Start, [])]
     visited = set()
 
-    while current_level:
-        next_level_candidates = PriorityQueue()
-
-        for state, path in current_level:
-            if state == Goal:
-                return path + [Goal]
-
-            x, y = Tim_0(state)
-
-            for dx, dy in Moves:
-                nx, ny = x + dx, y + dy
-                if Check(nx, ny):
-                    new_state = DiChuyen(state, x, y, nx, ny)
-                    if str(new_state) not in visited:
-                        visited.add(str(new_state))
-                        next_level_candidates.put((Chiphi(new_state), new_state, path + [state]))
-
-        current_level = []
-        for _ in range(min(beam_width, next_level_candidates.qsize())):
-            _, new_state, new_path = next_level_candidates.get()
-            current_level.append((new_state, new_path))
-
-    return []
-
-def Goal_Test(state):
-    return state == Goal
+    result = []
+    
+    while queue:
+        for i in range(min(beam_width, len(queue))):
+            chiphi,matran_hientai,path = queue.pop()
+            
+            result.append(matran_hientai)
+            
+            if matran_hientai == Goal:
+                path.append(Goal)
+                return path
+            
+            visited.add(str(matran_hientai))
+            x,y = Tim_0(matran_hientai)
+            
+            for dx,dy in Moves:
+                new_X = dx + x
+                new_Y = dy + y 
+                if(Check(new_X,new_Y)):
+                    new_matran = DiChuyen(matran_hientai,x,y,new_X,new_Y)
+                    if str(new_matran) not in visited:
+                        visited.add(str(new_matran))
+                        queue.append((khoang_cach_mahathan(new_matran),new_matran,path + [matran_hientai]))
+        queue.sort(key = lambda x : x[0])
+        queue = queue[:beam_width]
+    return result
 
 def Result_States(state,moves):
     result_states = []
@@ -415,8 +457,8 @@ def AND_OR_Search(start):
     return plan
 
 def OR_Search(state, path):
-    if Goal_Test(state):
-        return []
+    if state == Goal:
+        return state
     if any(state == p for p in path):
         return 'Failure'
     for move in Moves:

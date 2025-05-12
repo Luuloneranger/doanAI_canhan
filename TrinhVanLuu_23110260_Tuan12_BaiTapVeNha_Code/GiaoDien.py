@@ -73,6 +73,7 @@ while running:
     btn_Beam_Search = draw_button([710,200,80,60],"Beam",26)
     btn_AND_OR_Search = draw_button([810,200,80,60],"AOS",26)
     btn_KhongGianNiemTin_BFS = draw_button([910,200,80,60],"BFS_KGNT",26)
+    btn_Simple_Hill_Climbing = draw_button([1010,200,80,60],"SimpleHC",26)
     
     btn_after = draw_button([550,700,100,80],"->",63)
     btn_prev = draw_button([10,700,100,80],"<-",63)
@@ -159,6 +160,9 @@ while running:
             elif btn_KhongGianNiemTin_BFS.collidepoint(event.pos):
                 select = "BFS_KGNT"
                 index = 0
+            elif btn_Simple_Hill_Climbing.collidepoint(event.pos):
+                select = "SimpleHC"
+                index = 0
     if index == 0 :
         start_time = time.time()
         if select == "DFS":
@@ -178,7 +182,7 @@ while running:
         elif select == "SHC":
             path = Stochastic_Hill_Climbing(Start_DFS)
         elif select == "HC":
-            path = Hill_Climbing(Start_DFS)
+            path = Steepest_Hill_Climbing(Start_DFS)
         elif select == "SA":
             path = Simulated_Annealing(Start_DFS)
         elif select == "Beam":
@@ -189,6 +193,8 @@ while running:
         elif select == "BFS_KGNT":
             tap = giai_qua_khong_gian_niem_tin(Start_DFS)
             path = tap[0][1]
+        elif select == "SimpleHC":
+            path = Simple_Hill_Climbing(Start)
         end_time = time.time()
         time_algorithm = end_time - start_time
     pg.display.flip()
