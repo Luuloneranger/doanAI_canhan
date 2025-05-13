@@ -695,3 +695,134 @@ def BackTracking():
             check[i] = True
     return lst_state
 
+val = [0,1,2,3,4,5,6,7,8]   
+domain = {var: list(range(9)) for var in val}
+
+def sinh_cac_cap():
+    cap = []
+    for i in range(9):
+        for j in range(9):
+            if i != j:
+                cap.append((i, j))
+    return cap
+
+def constraint(x,y,Xi,Xj):
+    if x == y:
+        return False
+    if (Xi, Xj) in [(0, 1), (1, 0)]:
+        if x + y != 3:
+            return False
+    if (Xi, Xj) in [(5, 6)]:
+        if x >= y :
+            return False
+    return True 
+
+def taodomain(domain,Xi,Xj):
+    flag = False
+    giam = []
+    for x in domain[Xi]:
+        check = False
+        for j in domain[Xj]:
+            if constraint(x, j, Xi, Xj):
+                check= True
+                break
+        if not check:
+            giam.append(x)
+            flag = True
+    
+    for x in giam:
+        domain[Xi].remove(x)
+
+    return flag
+
+def Ac3(domain):
+    queue = deque (sinh_cac_cap())
+    while queue:
+        Xi, Xj = queue.popleft()
+        if taodomain( domain,Xi, Xj):
+            if not domain[Xi]:
+                return False
+    return True
+
+state = []
+
+def rangbuoc_theo_constraint(state):
+    a = b = c = d = e = f = g = h = i = 0
+    a,b,c = state[:3]
+    d,e,f = state[3:6]
+    g,h,i = state[6:9]
+    if a + b != 3:
+        return False
+    if f >= g :
+        return False
+    return True
+
+def backtracking(state,depth = 10):
+    if len(state) == 9 :
+        if rangbuoc_theo_constraint(state):
+            print("ma tran:")
+            for i in range(0, 9, 3):
+                print(state[i:i+3])
+            return state
+    else :
+        None 
+        
+    if depth == 0:
+        return None
+    var = len(state)
+    for value in domain[var]:
+        flag = True
+        for i in range(len(state)):
+            if not constraint(state[i], value, i, var):
+                flag = False
+                break
+        if flag:
+            state.append(value)
+            backtracking(state)
+            state.pop()
+
+    return None
+
+def thuong(state):
+    if state != Goal:
+        return -1
+    else:
+        return 100
+
+MAX_DEPTH = 2000
+def Q_Learning(start,epsilon=0.1, episodes=3,alpha=0.1,gamma=0.9):
+    lst_path = []
+    Q_Table = {}
+    
+    for i in range(3):
+        for j in range(3):
+            Q_Table[(i,j)] = [0, 0, 0, 0] # khởi tạo Q-table và điền giá trị vào 
+    
+    for _ in range(episodes): # bắt đầu một episode
+        matran_hientai = start
+        path = [matran_hientai]
+        
+        while matran_hientai != Goal:
+            x, y = Tim_0(matran_hientai)
+            
+            if random.random() < epsilon:
+                move = random.randint(0, 3)
+            else:
+                move = Q_Table[(x,y)].index(max(Q_Table[(x,y)]))
+            
+            dx,dy = Moves[move]
+            new_x, new_y = x + dx, y + dy
+            
+            if Check(new_x, new_y):
+                new_state = DiChuyen(matran_hientai, x, y, new_x, new_y)  
+                path.append(new_state) 
+                
+                Q_cu = Q_Table[(x,y)][move]
+                
+                Thuong = thuong(new_state)
+                Q_Table[(x,y)][move] = Q_cu + alpha *(Thuong + gamma* max(Q_Table[(new_x,new_y)]) - Q_cu )
+                
+                matran_hientai = new_state
+        lst_path.append(path)
+    return Q_Table
+
