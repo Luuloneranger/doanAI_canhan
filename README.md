@@ -1,5 +1,7 @@
 # doanAI_canhan
 
+# Trình Văn Lưu MSSV: 23110260
+
 # Nhóm Thuật toán không có thông tin 
 Thuật toán tìm kiếm không có thông tin (uninformed search) là nhóm thuật toán không sử dụng thông tin tiên đoán nào về vị trí đích ngoài việc biết trạng thái ban đầu và điều kiện dừng. 
 1. Breadth-First Search (BFS)
