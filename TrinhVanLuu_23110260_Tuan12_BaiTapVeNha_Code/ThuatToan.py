@@ -440,84 +440,163 @@ def Beam_Search(Start, beam_width=3):
         queue = queue[:beam_width]
     return result
 
+
+def sinh_cac_ca_the(state,soluong = 2):
+    i = 0
+    lst_buoc_di = []
+    while i <= soluong:
+        move = random.choice(Moves)
+        x,y = Tim_0(state)
+        dx,dy = move
+        new_X,new_Y = dx + x,dy + y
+        if Check(new_X,new_Y):
+            new_matran = DiChuyen(state,x,y,new_X,new_Y)
+            if new_matran not in lst_buoc_di:
+                lst_buoc_di.append(new_matran)
+                state = new_matran
+                chiphi = khoang_cach_mahathan(new_matran)
+                i += 1
+    return (lst_buoc_di, chiphi)
+
+def lai_tao(cha, me):
+    mid = min(len(cha), len(me)) // 2
+    con = cha[:mid] + me[mid:]
+    return con
+
+def dot_bien(lst_state,tile = 0.15):
+    new_state = copy.deepcopy(lst_state)
+    for i in range(1,len(lst_state)):
+        if random.random() <= tile :
+            x,y = Tim_0(lst_state[i])
+            moves = random.choice(Moves)
+            dx,dy = moves
+            new_X,new_Y = dx + x,dy + y
+            if Check(new_X,new_Y):
+                new_matran = DiChuyen(lst_state[i],x,y,new_X,new_Y)
+                if new_matran not in new_state:
+                    new_state[i] = new_matran
+    return new_state    
+
+def Genetic_Algorithm(state,soluong = 10,thehe = 200):
+    res = [state]
+    for i in range(thehe):
+        lst_ca_the = []
+        for i in range(soluong):
+            ca_the = sinh_cac_ca_the(state)
+            lst_ca_the.append(ca_the)
+        
+        lst_ca_the.sort(key=lambda x: x[1])
+        
+        for path,chiphi in lst_ca_the:
+            if Goal in path:
+                return path
+        
+        hai_ca_the_best = lst_ca_the[:2].copy()
+        cha,me = hai_ca_the_best[0][0], hai_ca_the_best[1][0]
+        
+        con  = lai_tao(cha,me)
+        state = dot_bien(con)[-1]
+        res.append(state)
+    return res
+
+def Tim_Path( path):
+    new_path = []
+    for i in path:
+        new_path.append(i)
+        if i == Goal:
+            break
+    return new_path
+
+
 def Result_States(state,moves):
     result_states = []
     x, y = Tim_0(state)
     
-    dx,dy = moves
-    new_X = dx + x
-    new_Y = dy + y 
-    if Check(new_X, new_Y):
-        new_matran = DiChuyen(state, x, y, new_X, new_Y)
-        result_states.append(new_matran)
-    return result_states
+    lst_dichuyen = [moves,(0,1),(0,-1)]
+    for i in lst_dichuyen:
+        dx, dy = i
+        new_X = dx + x
+        new_Y = dy + y 
+        if Check(new_X, new_Y):
+            new_matran = DiChuyen(state, x, y, new_X, new_Y)
+            result_states.append(new_matran)
+    # dx,dy = moves
+    # new_X = dx + x
+    # new_Y = dy + y 
+    # if Check(new_X, new_Y):
+    #     new_matran = DiChuyen(state, x, y, new_X, new_Y)
+    #     result_states.append(new_matran)
+        
+    #     for move in Moves:
+    #         if move != moves:
+    #             new_dx, new_dy = new_X + move[0], new_Y + move[1]
+    #             if Check(new_dx, new_dy):
+    #                 new_matran_tmp = DiChuyen(new_matran, new_X, new_Y, new_dx, new_dy)
+    #                 result_states.append(new_matran_tmp)
+    weight = []
+    for i in range(len(result_states)):
+        weight.append((i + 1)*10)
+    
+    if len(result_states) == 0:
+        return None
+    res = random.choices(result_states,weights= weight, k=1)
+    
+    return res[0]
 
-def AND_OR_Search(start):
-    plan = OR_Search(start, [])
+def AND_OR_Search(start,depth = 300):
+    plan = OR_Search(start,[],visited=set(),depth=depth)
     return plan
 
-def OR_Search(state, path):
-    if state == Goal:
-        return state
-    if any(state == p for p in path):
-        return 'Failure'
+def OR_Search(state, path = [],visited = set(),depth=100):
+    if state == Goal or depth <= 0: 
+        return path
+    
+    if str(state) in visited:
+        return None
+    visited.add(str(state))
+    
     for move in Moves:
         result_states = Result_States(state, move)
         if not result_states:
             continue
-        plan = AND_Search(result_states, path + [state])
-        if plan != 'Failure':
-            return (move, plan)
-    return 'Failure'
+        plan = AND_Search(result_states, path + [state],visited.copy(),depth=depth-1)
+        if plan:
+            return plan
+    return None
 
-def AND_Search(states, path):
-    plan = {}
-    for s in states:
-        subplan = OR_Search(s, path)
-        if subplan == 'Failure':
-            return 'Failure'
-        plan[change_matran_string(s)] = subplan
-    return plan
+def AND_Search(states, path,visited,depth):
+    if Goal in states:
+        return path + [Goal]
+    result = OR_Search(states, path + [states] ,visited,depth=depth-1)
+    if result:
+        return result
+    return None
+    
 
-def TIm_Path(plan, state):
-    path = [state]
-    current_state = state
-    while isinstance(plan, tuple):
-        move, subplans = plan
-        x, y = Tim_0(current_state)
-        dx, dy = move
-        new_x, new_y = x + dx, y + dy
-        next_state = DiChuyen(current_state, x, y, new_x, new_y)
-        path.append(next_state)
-        state_str = change_matran_string(next_state)
-        if state_str not in subplans:
-            break
-        plan = subplans[state_str]
-        current_state = next_state
-    return path
+def moitruong_niem_tin():
+    pass
 
+# def sinh_khong_gian_niem_tin(state):
+#     x, y = Tim_0(state)
+#     tap_trang_thai = []
 
-def sinh_khong_gian_niem_tin(state):
-    x, y = Tim_0(state)
-    tap_trang_thai = []
+#     for dx, dy in Moves:
+#         new_x, new_y = x + dx, y + dy
+#         if Check(new_x, new_y):
+#             trang_thai_chinh = DiChuyen(state, x, y, new_x, new_y)
+#             tap_trang_thai.append(trang_thai_chinh)
+#     return tap_trang_thai
 
-    for dx, dy in Moves:
-        new_x, new_y = x + dx, y + dy
-        if Check(new_x, new_y):
-            trang_thai_chinh = DiChuyen(state, x, y, new_x, new_y)
-            tap_trang_thai.append(trang_thai_chinh)
-    return tap_trang_thai
-
-def giai_qua_khong_gian_niem_tin(start_state):
-    tap_trang_thai = sinh_khong_gian_niem_tin(start_state)
-    ket_qua = []
-    for trang_thai in tap_trang_thai:
-        duong_di = BFS(trang_thai)
-        if duong_di:
-            ket_qua.append((trang_thai, duong_di))
-        else:
-            print("Khong tim thay duong di cho trang thai:", trang_thai)
-    return ket_qua
+# def giai_qua_khong_gian_niem_tin(start_state):
+#     tap_trang_thai = sinh_khong_gian_niem_tin(start_state)
+#     ket_qua = []
+#     for trang_thai in tap_trang_thai:
+#         duong_di = BFS(trang_thai)
+#         if duong_di:
+#             ket_qua.append((trang_thai, duong_di))
+#         else:
+#             print("Khong tim thay duong di cho trang thai:", trang_thai)
+#     return ket_qua
 
 def BackTracking_Search(State,Path,Visited,depth=100):
     if State == Goal:
@@ -578,6 +657,35 @@ def Giai_niem_tin_mot_phan_bangBFS():
         else:
             print("Khong tim thay duong di cho trang thai:", trang_thai)
     return ket_qua
+
+# tap = Giai_niem_tin_mot_phan_bangBFS()
+# for i in tap:
+#     print("Trang thai:", i[0],"\n")
+#     print("Duong di:", i[1])
+#     print("\n")
+
+def Sinh_trang_thai_cho_mtnt(soluong = 100):
+    ds_trang_thai = []
+    state = [x for x in range(9)]
+    for i in range(soluong):
+        random.shuffle(state)
+        new_state = [state[0:3], state[3:6], state[6:9]]
+        if (Xet_matran_Giai_dc(new_state)):
+            ds_trang_thai.append(new_state)
+    return ds_trang_thai    
+
+def Giai_niem_tin_A_star():
+    tap_trang_thai = Sinh_trang_thai_cho_mtnt(10)
+    ketqua =[]
+    for trang_thai in tap_trang_thai:
+        duong_di = A_Star(trang_thai)
+        if duong_di:
+            ketqua.append((trang_thai, duong_di))
+        else:
+            print("Khong tim thay duong di cho trang thai:", trang_thai)
+    return ketqua
+
+
 
 # Thuật toán tạo ra nhiều tập hợp trạng thái (Kiểm thử, Backtracking, AC-3)
 
@@ -678,6 +786,8 @@ def Kiem_Thu_Algorithm():
         else:
             print(f"ma tran {state} thoa yeu cau")
 
+# Kiem_Thu_Algorithm()
+
 def BackTracking():
     global lst_state
     State = matran1D_to_2D(state)
@@ -694,6 +804,12 @@ def BackTracking():
             state.pop()
             check[i] = True
     return lst_state
+
+# print("Cac ma tran thoa yeu cau thuat toan Backtracking:")
+# lst_state = BackTracking()
+# for step in lst_state:
+#     print(step,"\n")
+
 
 val = [0,1,2,3,4,5,6,7,8]   
 domain = {var: list(range(9)) for var in val}
@@ -757,7 +873,7 @@ def rangbuoc_theo_constraint(state):
         return False
     return True
 
-def backtracking(state,depth = 10):
+def backtracking_AC3(state = [],depth = 10):
     if len(state) == 9 :
         if rangbuoc_theo_constraint(state):
             print("ma tran:")
@@ -766,7 +882,6 @@ def backtracking(state,depth = 10):
             return state
     else :
         None 
-        
     if depth == 0:
         return None
     var = len(state)
@@ -778,10 +893,12 @@ def backtracking(state,depth = 10):
                 break
         if flag:
             state.append(value)
-            backtracking(state)
+            backtracking_AC3(state)
             state.pop()
-
     return None
+
+print("Cac ma tran thoa yeu cau thuat toan Backtracking + AC3:")
+backtracking_AC3()
 
 def thuong(state):
     if state != Goal:
@@ -789,8 +906,7 @@ def thuong(state):
     else:
         return 100
 
-MAX_DEPTH = 2000
-def Q_Learning(start,epsilon=0.1, episodes=3,alpha=0.1,gamma=0.9):
+def Q_Learning(start,epsilon=0.1, episodes=1,alpha=0.1,gamma=0.9):
     lst_path = []
     Q_Table = {}
     
@@ -823,6 +939,5 @@ def Q_Learning(start,epsilon=0.1, episodes=3,alpha=0.1,gamma=0.9):
                 Q_Table[(x,y)][move] = Q_cu + alpha *(Thuong + gamma* max(Q_Table[(new_x,new_y)]) - Q_cu )
                 
                 matran_hientai = new_state
-        lst_path.append(path)
-    return Q_Table
-
+        path.append(Goal)
+    return path

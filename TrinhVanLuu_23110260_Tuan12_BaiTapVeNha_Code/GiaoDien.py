@@ -46,6 +46,15 @@ def Change_color(square,color,radius=14):
     pg.draw.rect(screen,color,square,border_radius=radius)
     pg.display.update(square)
 
+def random_start():
+    matran = [1,2,3,4,5,6,7,8,0]
+    random.shuffle(matran)
+    new_matran = [matran[0:3],matran[3:6],matran[6:9]]
+    while not Xet_matran_Giai_dc(new_matran):
+        random.shuffle(matran)
+        new_matran = [matran[0:3],matran[3:6],matran[6:9]]
+    new_matran = [matran[0:3],matran[3:6],matran[6:9]]
+    return new_matran
 
 running = True
 select = ""
@@ -54,6 +63,7 @@ path = []
 check = 0
 index_xem = 0
 time_algorithm = 0
+delay =200
 while running:
     screen.fill("#f4f7f8")
     pg.draw.line(screen,"black",(705,0),(705,800),width=1)
@@ -72,11 +82,16 @@ while running:
     btn_Simulated_Annealing = draw_button([1110,120,80,60],"SA",26)
     btn_Beam_Search = draw_button([710,200,80,60],"Beam",26)
     btn_AND_OR_Search = draw_button([810,200,80,60],"AOS",26)
-    btn_KhongGianNiemTin_BFS = draw_button([910,200,80,60],"BFS_KGNT",26)
+    btn_Qlearn = draw_button([910,200,80,60],"Qlear",26)
     btn_Simple_Hill_Climbing = draw_button([1010,200,80,60],"SimpleHC",26)
+    btn_GA = draw_button([1110,200,80,60],"GA",26)
+    
     
     btn_after = draw_button([550,700,100,80],"->",63)
     btn_prev = draw_button([10,700,100,80],"<-",63)
+    
+    btn_random = draw_button([10,40,80,60],"Random Start",16)
+    btn_random_simple = draw_button([110,40,80,60],"State Simple",16)
     
     Title = VeChu(60,[200,0],"8 Puzzel Game",color="#009688")
     Begin = draw_8_puzzel(Start)
@@ -90,14 +105,18 @@ while running:
     Buoc = VeChu(36,[710,450],f"Step: {len(path)}",color="#263238")
     Time = VeChu(36,[710,500],f"Time: {time_algorithm:.2f} s",color="#263238")
     
+    Chinh_Time = VeChu(36,[10,560],"Time: ",color="#263238")
+    btn_cong = draw_button([10,600,80,60],"+",26)
+    btn_tru = draw_button([110,600,80,60],"-",26)
+    
     if index < len(path):
         draw_8_puzzel(path[index],210,430)
-        pg.time.delay(200)
+        pg.time.delay(delay)
         index += 1
         
     if index == len(path) and 0 <= index_xem < len(path) :
         draw_8_puzzel(path[index_xem],210,430)
-        pg.time.delay(200)
+        pg.time.delay(delay)
     
     if index_xem < 0 or index_xem > len(path)-1:
         VeChu(36,[200,725],"This step does not exist.!")
@@ -157,12 +176,30 @@ while running:
             elif btn_AND_OR_Search.collidepoint(event.pos):
                 select = "AOS"
                 index = 0
-            elif btn_KhongGianNiemTin_BFS.collidepoint(event.pos):
-                select = "BFS_KGNT"
-                index = 0
             elif btn_Simple_Hill_Climbing.collidepoint(event.pos):
                 select = "SimpleHC"
                 index = 0
+            elif btn_GA.collidepoint(event.pos):
+                select = "GA"
+                index = 0
+            elif btn_random.collidepoint(event.pos):
+                Start = random_start()
+                index = 0
+                index_xem = 0
+                select = ""
+            elif btn_random_simple.collidepoint(event.pos):
+                Start = Start_DFS
+                index = 0
+            elif btn_cong.collidepoint(event.pos):
+                if delay > 0:
+                    delay -= 100
+            elif btn_tru.collidepoint(event.pos):
+                if delay < 2000:
+                    delay += 100
+            elif btn_Qlearn.collidepoint(event.pos):
+                select = "Qlearn"
+                index = 0
+                index_xem = 0
     if index == 0 :
         start_time = time.time()
         if select == "DFS":
@@ -180,21 +217,21 @@ while running:
         elif select == "IDA" :
             path = IDA(Start,10)
         elif select == "SHC":
-            path = Stochastic_Hill_Climbing(Start_DFS)
+            path = Stochastic_Hill_Climbing(Start)
         elif select == "HC":
-            path = Steepest_Hill_Climbing(Start_DFS)
+            path = Steepest_Hill_Climbing(Start)
         elif select == "SA":
-            path = Simulated_Annealing(Start_DFS)
+            path = Simulated_Annealing(Start)
         elif select == "Beam":
             path = Beam_Search(Start,3)
         elif select == "AOS":
-            plan = AND_OR_Search(Start_DFS)
-            path = TIm_Path(plan, Start_DFS)
-        elif select == "BFS_KGNT":
-            tap = giai_qua_khong_gian_niem_tin(Start_DFS)
-            path = tap[0][1]
+            path = AND_OR_Search(Start)
         elif select == "SimpleHC":
             path = Simple_Hill_Climbing(Start)
+        elif select == "GA":
+            path = Tim_Path(Genetic_Algorithm(Start))
+        elif select == "Qlearn":
+            path = Q_Learning(Start)
         end_time = time.time()
         time_algorithm = end_time - start_time
     pg.display.flip()
