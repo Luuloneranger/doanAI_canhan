@@ -41,7 +41,8 @@ IDDFS kết hợp giữa DFS và BFS: nó thực hiện DFS nhiều lần với 
 ![IDDFS](https://github.com/user-attachments/assets/4d817569-77e2-44d2-92c6-0259a65fdb5e)
 
 - So sánh Chung:
-      +  BFS (Breadth-First Search):
+
+  +  BFS (Breadth-First Search):
     Tìm kiếm theo chiều rộng, đảm bảo tìm được lời giải tối ưu nếu chi phí các bước bằng nhau. Tuy nhiên, tiêu tốn nhiều bộ nhớ vì phải lưu toàn bộ các node theo từng mức.
     
     +  DFS (Depth-First Search):
