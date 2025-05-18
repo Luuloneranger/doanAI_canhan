@@ -1,6 +1,6 @@
 # doanAI_canhan
 
-#Nhóm Thuật toán không có thông tin 
+# Nhóm Thuật toán không có thông tin 
 Thuật toán tìm kiếm không có thông tin (uninformed search) là nhóm thuật toán không sử dụng thông tin tiên đoán nào về vị trí đích ngoài việc biết trạng thái ban đầu và điều kiện dừng. 
 1. Breadth-First Search (BFS)
 BFS duyệt đồ thị theo chiều rộng, nghĩa là mở rộng tất cả các node ở độ sâu hiện tại trước khi đi sâu hơn. Thuật toán này sử dụng hàng đợi (queue) để quản lý các node cần duyệt. BFS đảm bảo tìm được đường đi ngắn nhất nếu chi phí các bước bằng nhau. Tuy nhiên, nó tiêu tốn nhiều bộ nhớ do phải lưu trữ toàn bộ các node ở mỗi mức.
