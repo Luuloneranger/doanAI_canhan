@@ -20,48 +20,48 @@ Nhóm thuật toán này sử dụng hàm đánh giá chi phí giúp giảm số
 
 1. Greedy
 Thuật toán này đánh giá chi phí từ điểm hiện tại đến đích không quan tâm đến chi phí đã đi.
-  + Ưu điểm: tốc độ nhanh, trực quan.
-  + Nhược điểm: không tối ưu, không đầy đủ nếu có chu trình.
+    + Ưu điểm: tốc độ nhanh, trực quan.
+    + Nhược điểm: không tối ưu, không đầy đủ nếu có chu trình.
 
 2. A*
 Thuật toán này kết hợp giữa việc tính chi phí từ khi bắt đầu đến điểm hiện tại và chi phí từ điểm hiện tại đến đích
-  Ưu điểm: tối ưu, đầy đủ nếu chọn h(n) đúng.
-  Nhược điểm: tốn RAM, đặc biệt với không gian lớn
+    + Ưu điểm: tối ưu, đầy đủ nếu chọn h(n) đúng.
+    + Nhược điểm: tốn RAM, đặc biệt với không gian lớn
 
 3. IDA*
 Thuật toán này là việc kết hợp giữa thuật toán IDDFS và thuật toán A*. Thay vì dùng hàng đợi ưu tiên như A* thì IDA* dùng giới hạn f(n).Giới hạn f(n) sẽ tăng dần theo từng vòng lặp
-  Ưu điểm: tiết kiệm bộ nhớ hơn A*.
-  Nhược điểm: thời gian chạy có thể cao nếu không gian phức tạp. 
+    + Ưu điểm: tiết kiệm bộ nhớ hơn A*.
+    + Nhược điểm: thời gian chạy có thể cao nếu không gian phức tạp. 
 
 # Nhóm Thuật toán leo đồi 
 Nhóm thuật toán này tập trung vào việc tìm nghiệm tốt nhất bằng cách cải thiện nghiệm hiện tại. Tuy nhiên các thuật toán trong đây thường bị một vấn đề là local.
 
 1. Simple Hill Climbing
 Thuật toán bắt đầu từ trạng thái ban đầu và liên tục chuyển sang trạng thái láng giềng có giá trị đánh giá cao hơn, cho đến khi không thể cải thiện nữa.
-  Ưu điểm: đơn giản, nhanh.
-  Nhược điểm: dễ mắc kẹt, không quay lại trạng thái cũ.
+    + Ưu điểm: đơn giản, nhanh.
+    + Nhược điểm: dễ mắc kẹt, không quay lại trạng thái cũ.
 
 2. Steepest Hill Climbing
 Thuật Toán này là biến thể cải tiến của Simple Hill Climbing. Thay vì chọn láng giềng đầu tiên tốt hơn, thuật toán duyệt tất cả các láng giềng và chọn cái tốt nhất (có giá trị đánh giá cao nhất).
-  Ưu điểm: lựa chọn tối ưu tại mỗi bước, tiến xa hơn Simple HC.
-  Nhược điểm: vẫn không tránh được bẫy local.
+    + Ưu điểm: lựa chọn tối ưu tại mỗi bước, tiến xa hơn Simple HC.
+    + Nhược điểm: vẫn không tránh được bẫy local.
 
 3. Stochastic Hill Climbing
 Là biến thể của Hill Climbing, thay vì chọn tốt nhất trong các láng giềng, thuật toán chọn ngẫu nhiên một láng giềng tốt hơn hiện tại.
-  Giúp tránh bẫy cục bộ so với Hill Climbing thường.
-  Có tính ngẫu nhiên nên kết quả có thể khác nhau mỗi lần chạy.
+    + Giúp tránh bẫy cục bộ so với Hill Climbing thường.
+    + Có tính ngẫu nhiên nên kết quả có thể khác nhau mỗi lần chạy.
 
 4. Simulated Annealing
 Là thuật toán mô phỏng quá trình luyện kim, cho phép chấp nhận nghiệm kém hơn một cách xác suất để thoát khỏi cực trị cục bộ.
-  Ưu điểm: thoát được cạm bẫy local.
-  Nhược điểm: cần điều chỉnh tham số (nhiệt độ ban đầu, tốc độ làm nguội).
+    + Ưu điểm: thoát được cạm bẫy local.
+    + Nhược điểm: cần điều chỉnh tham số (nhiệt độ ban đầu, tốc độ làm nguội).
 
 5. Beam Search
 Beam Search mở rộng từ BFS, nhưng chỉ giữ lại k node tốt nhất ở mỗi bước (beam width). Giảm chi phí bộ nhớ và thời gian, nhưng có thể bỏ lỡ lời giải tốt nếu k quá nhỏ.
-  Là tìm kiếm theo chiều rộng có chọn lọc.
-  Không đảm bảo tối ưu hoặc đầy đủ.
+    + Là tìm kiếm theo chiều rộng có chọn lọc.
+    + Không đảm bảo tối ưu hoặc đầy đủ.
 
 6. Genetic Algorithm (chưa làm)
 Là thuật toán dựa trên di truyền học: mỗi nghiệm là một “cá thể”, qua các vòng chọn lọc, lai ghép (crossover) và đột biến (mutation) để tiến hóa nghiệm tốt hơn.
-  Tốt cho các bài toán không gian lớn, rời rạc.
-  Kết quả phụ thuộc vào cách mã hóa cá thể và hàm đánh giá.
+    + Tốt cho các bài toán không gian lớn, rời rạc.
+    + Kết quả phụ thuộc vào cách mã hóa cá thể và hàm đánh giá.
