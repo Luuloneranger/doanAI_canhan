@@ -19,6 +19,7 @@ def tim_X(x):
                 return i,j
 
 def khoang_cach_mahathan(Matran_HienTai):
+    """ Tính khoảng cách Manhattan của ma trận hiện tại """
     sum = 0
     for i in range(3):
         for j in range(3):
@@ -28,6 +29,7 @@ def khoang_cach_mahathan(Matran_HienTai):
     return sum
 
 def Tim_0(Matran_hientai):
+    """ Tìm vị trí của khoảng trống trong ma trận """
     for i in range(3):
         for j in range(3):
             if Matran_hientai[i][j] == 0:
@@ -37,6 +39,7 @@ def Check(x, y):
     return 0 <= x < 3 and 0 <= y < 3
 
 def Chiphi(matran_HienTai):
+    """Hàm tính chi phí xem coi có bao nhiêu phần tử trong ma trận khác với ma trận đích"""
     dem = 0
     for i in range(3):
         for j in range(3):
@@ -45,6 +48,7 @@ def Chiphi(matran_HienTai):
     return dem
 
 def DiChuyen(Matran_HienTai, x, y, new_x, new_y):
+    """Thực hiện hành động trong môi trường"""
     new_state = copy.deepcopy(Matran_HienTai)
     new_state[x][y], new_state[new_x][new_y] = new_state[new_x][new_y], new_state[x][y]
     return new_state
@@ -247,11 +251,10 @@ def IDA(Start,limit):
     check = None
     while check == None:
         limit = limit + limit/2
-        check = IDA_limit(Start=Start,limit= limit )
+        check = IDA_limit(Start=Start,limit = limit )
     return check
 
 # local search algorithms 
-
 
 def Stochastic_Hill_Climbing(Start):
     stack = [ ( Start , [] ) ]
@@ -385,7 +388,7 @@ def Simulated_Annealing(Start):
         
         if not list_state.empty(): 
             chiphi_tmp,new_state = list_state.get()
-            if chiphi_tmp > khoang_cach_mahathan(matran_hientai):
+            if chiphi_tmp > khoang_cach_mahathan(matran_hientai): 
                 p = random.uniform(0,1)
                 if p < exp(-(khoang_cach_mahathan(matran_hientai) - chiphi_tmp)/T):
                     visited.add(str(new_state))
@@ -573,8 +576,6 @@ def AND_Search(states, path,visited,depth):
     return None
     
 
-def moitruong_niem_tin():
-    pass
 
 # def sinh_khong_gian_niem_tin(state):
 #     x, y = Tim_0(state)
@@ -598,25 +599,25 @@ def moitruong_niem_tin():
 #             print("Khong tim thay duong di cho trang thai:", trang_thai)
 #     return ket_qua
 
-def BackTracking_Search(State,Path,Visited,depth=100):
-    if State == Goal:
-        return Path + [Goal]
+# def BackTracking_Search(State,Path,Visited,depth=100):
+#     if State == Goal:
+#         return Path + [Goal]
 
-    if depth == 0:
-        return None
+#     if depth == 0:
+#         return None
     
-    x,y = Tim_0(State)
-    for dx,dy in Moves:
-        new_X = dx + x
-        new_Y = dy + y 
-        if(Check(new_X,new_Y)):
-            new_matran = DiChuyen(State,x,y,new_X,new_Y)
-            if str(new_matran) not in Visited:
-                Visited.add(str(new_matran))
-                result = BackTracking_Search(new_matran,Path + [State],Visited,depth-1)
-                if result:
-                    return result
-    return []
+#     x,y = Tim_0(State)
+#     for dx,dy in Moves:
+#         new_X = dx + x
+#         new_Y = dy + y 
+#         if(Check(new_X,new_Y)):
+#             new_matran = DiChuyen(State,x,y,new_X,new_Y)
+#             if str(new_matran) not in Visited:
+#                 Visited.add(str(new_matran))
+#                 result = BackTracking_Search(new_matran,Path + [State],Visited,depth-1)
+#                 if result:
+#                     return result
+#     return []
 
 def Xet_matran_Giai_dc(State):
     state = []
@@ -634,8 +635,8 @@ def Xet_matran_Giai_dc(State):
         return True
     return False
 
-State_Belief = [[1, 2, 3],[], []]
 
+State_Belief = [[1, 2, 3],[], []]
 def Sinh_State(soluong = 100):
     ds_State = []
     Phan_codinh = [1,2,3]
@@ -664,6 +665,7 @@ def Giai_niem_tin_mot_phan_bangBFS():
 #     print("Duong di:", i[1])
 #     print("\n")
 
+
 def Sinh_trang_thai_cho_mtnt(soluong = 100):
     ds_trang_thai = []
     state = [x for x in range(9)]
@@ -685,7 +687,11 @@ def Giai_niem_tin_A_star():
             print("Khong tim thay duong di cho trang thai:", trang_thai)
     return ketqua
 
-
+# tap = Giai_niem_tin_A_star()
+# for i in tap:
+#     print("Trang thai:", i[0],"\n")
+#     print("Duong di:", i[1])
+#     print("\n")
 
 # Thuật toán tạo ra nhiều tập hợp trạng thái (Kiểm thử, Backtracking, AC-3)
 
