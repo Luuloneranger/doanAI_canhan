@@ -99,11 +99,11 @@ Với:
         + reward là phần thưởng
         + gamma là khoảng cách
         + s' là trạng thái mới
-Ưu Điểm:
+- Ưu Điểm:
         + Dễ hiểu – dễ cài	
         + Không cần mô hình môi trường	
         + Học được chính sách tối ưu	
         + Tốt cho không gian trạng thái nhỏ	
-Nhược điểm:
+- Nhược điểm:
         + Học chậm trong môi trường phức tạp
         + Không mở rộng tốt cho bài toán
