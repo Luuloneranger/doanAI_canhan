@@ -20,8 +20,8 @@ Nhóm thuật toán này sử dụng hàm đánh giá chi phí giúp giảm số
 
 1. Greedy
 Thuật toán này đánh giá chi phí từ điểm hiện tại đến đích không quan tâm đến chi phí đã đi.
-  Ưu điểm: tốc độ nhanh, trực quan.
-  Nhược điểm: không tối ưu, không đầy đủ nếu có chu trình.
+  + Ưu điểm: tốc độ nhanh, trực quan.
+  + Nhược điểm: không tối ưu, không đầy đủ nếu có chu trình.
 
 2. A*
 Thuật toán này kết hợp giữa việc tính chi phí từ khi bắt đầu đến điểm hiện tại và chi phí từ điểm hiện tại đến đích
