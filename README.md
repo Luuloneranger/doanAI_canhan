@@ -65,3 +65,45 @@ Beam Search mở rộng từ BFS, nhưng chỉ giữ lại k node tốt nhất �
 Là thuật toán dựa trên di truyền học: mỗi nghiệm là một “cá thể”, qua các vòng chọn lọc, lai ghép (crossover) và đột biến (mutation) để tiến hóa nghiệm tốt hơn.
     + Tốt cho các bài toán không gian lớn, rời rạc.
     + Kết quả phụ thuộc vào cách mã hóa cá thể và hàm đánh giá.
+
+# Nhóm Thuật toán trong môi trường không xác định 
+1. AND OR SEARCH
+    + OR-node: Đại diện cho lựa chọn giữa các hành động khác nhau.
+    + AND-node: Đại diện cho các điều kiện con đều phải được thỏa mãn để giải quyết bài toán
+
+2. Belief State 
+    Thuật toán này là thuật toán dùng để giải khi không biết bất cứ thông tin gì về môi trường. Giả định mình trong một môi trường và tìm ra lời giải
+
+3. Niềm tin một phần
+    Thuật toán này cũng như thuật toán của môi trường niềm tin, nhưng điểm khác biệt là sẽ có một số thông tin được thấy rõ. Việc còn lại là giả định các thông tin khác tạo nên môi trường và giải.
+
+# Nhóm thuật toán ràng buộc 
+Trong đồ án này thì nhóm thuật toán ràng buộc bao gồm có kiểm thử, backtracking và AC3
+1. Kiểm thử
+Thuật toán sẽ thử tất cả các giá trị rồi kiểm tra điều kiện, nếu không thoả điều kiện thì sẽ bỏ trường hợp đó. Kết quả là một tập các ma trận thoả điều kiện của thuật toán
+
+2. Backtracking
+Thuật toán cũng như kiểm thử nhưng khác ở chỗ kiểm thử sẽ đặt hết giá trị rồi mới xét ràng buộc trong khi đó Backtracking dùng đệ quy để quay lui lại. trong quá trình quay lui nếu thầy ma trận hiện tại có một tiêu chí không thoả điều kiện thì sẽ break nhánh đó và nhảy sang nhánh khác để xét tiếp
+
+3. AC3
+Thuật toán này cũng như hai cái trên. Mà AC3 dựa vào điều kiện hạn chế các giá trị có thể xuất hiện của mỗi biến trước rồi dựa vào đó mà tìm mà trận thoả yêu cầu
+
+# Nhóm Thuật toán củng cố 
+Thuật toán học củng cố (Reinforcement Learning – RL) thuộc nhóm học có mục tiêu (goal-directed learning) trong Machine Learning, nơi mà tác nhân (agent) học cách hành động tối ưu trong một môi trường thông qua phần thưởng (reward) nhận được sau mỗi hành động.
+1. Q learning
+Q-Learning là một thuật toán Model-Free Reinforcement Learning, giúp agent học cách tối ưu hành động trong môi trường bằng cách cập nhật bảng giá trị (Q-table), mà không cần biết trước mô hình môi trường.Mục tiêu: Học ra hàm Q(s, a) = giá trị kỳ vọng của việc thực hiện hành động a tại trạng thái s, rồi từ đó chọn hành động tối ưu.
+Công thức cập nhật Q:
+    + Q(s,a) = Q(s,a) + alpha*(reward + gamma* max(Q(s',a')) - Q(s,a))
+Với:
+        + alpha là learning rate
+        + reward là phần thưởng
+        + gamma là khoảng cách
+        + s' là trạng thái mới
+Ưu Điểm:
+        + Dễ hiểu – dễ cài	
+        + Không cần mô hình môi trường	
+        + Học được chính sách tối ưu	
+        + Tốt cho không gian trạng thái nhỏ	
+Nhược điểm:
+        + Học chậm trong môi trường phức tạp
+        + Không mở rộng tốt cho bài toán
